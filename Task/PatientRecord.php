@@ -25,7 +25,7 @@ class Patient implements PatientRecord
         $result = mysqli_query($connection, "select * from patient where pn = '$patientNumber'");
         $row = mysqli_fetch_assoc($result);
         $this->patientNumber = $patientNumber;
-        $this->patientId = $row['patient_id'];
+        $this->patientId = $row['_id'];
         $this->patientFirstName = $row['first'];
         $this->patientLastName = $row['last'];
         $this->patientDateOfBirth = $row['dob'];
@@ -76,3 +76,7 @@ class Insurance implements PatientRecord {
         // TODO: Implement getPatientNumber() method.
     }
 }
+$patient = new Patient('000000002');
+$patientId = $patient -> getPatientId();
+print $patientId;
+?>

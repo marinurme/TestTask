@@ -1,6 +1,8 @@
 <?php
+
 //Exercise 2 a)
 $connection = getWantedPatientsInfo();
+
 function getWantedPatientsInfo(): mixed
 {
     list($connection, $result) = getDataFromPatientTable();
@@ -64,6 +66,7 @@ function getLettersOccurrenceInNames(array $usedCharsArray, mixed $joinedNames, 
         $charPercentage = $count / $joinedNamesLength * 100;
         print $char . "\t" . $count . "\t" . round($charPercentage, 2) . "%" . "\n";
     }
+
 }
 ?>
 
