@@ -1,29 +1,23 @@
 <?php
 
 //Exercise 2 a)
-$connection = getWantedPatientsInfo();
+$connection = getDbConnection();
+getWantedPatientsInfo($connection);
 
-function getWantedPatientsInfo(): mixed
+function getWantedPatientsInfo(mixed $connection): void
 {
-    list($connection, $result) = getDataFromPatientTable();
-    $row = fetchWantedRows($result);
-    return $connection;
+    $result = mysqli_query($connection, 'select p.pn, p.last, p.first, i.iname, i.from_date, i.to_date
+    from mysql.patient p INNER JOIN mysql.insurance i on p._id = i.patient_id order by i.from_date, p.last asc');
+    while ($row = mysqli_fetch_assoc($result)) {
+        print "{$row['pn']}, {$row['last']}, {$row['first']}, {$row['iname']}, {$row['from_date']}, {$row['to_date']}\n";
+    }
 }
-function getDataFromPatientTable(): array
+
+function getDbConnection(): mysqli|false
 {
     $connection = mysqli_connect('localhost', 'root', 'rootpassword');
     mysqli_select_db($connection, 'mysql');
-    $result = mysqli_query($connection, 'select p.pn, p.last, p.first, i.iname, i.from_date, i.to_date
-    from patient p INNER JOIN insurance i on p._id = i.patient_id order by i.from_date, p.last asc');
-    return array($connection, $result);
-}
-
-function fetchWantedRows(mixed $result): array|null|false
-{
-    while ($row = mysqli_fetch_assoc($result)) {
-        echo "{$row['pn']}, {$row['last']}, {$row['first']}, {$row['iname']}, {$row['from_date']}, {$row['to_date']}\n";
-    }
-    return $row;
+    return $connection;
 }
 
 //Exercise 2 b)
@@ -39,7 +33,7 @@ function createStatisticsAboutLetterOccurrenceInFullNames(mixed $connection): vo
 
 function getFullNames(mixed $connection): array
 {
-    $fullName = mysqli_query($connection, 'select CONCAT(UPPER(first),UPPER(last)) as full_name from patient');
+    $fullName = mysqli_query($connection, 'select CONCAT(UPPER(first),UPPER(last)) as full_name from mysql.patient');
     $fullNames = [];
     while ($row = mysqli_fetch_array($fullName)) {
         $fullNames[] = $row['full_name'];
@@ -56,8 +50,7 @@ function joinFullNames(array $fullNames): array
 function getUsedCharsArray(mixed $joinedNames): array
 {
     $usedChars = count_chars($joinedNames, 3);
-    $usedCharsArray = str_split($usedChars);
-    return $usedCharsArray;
+    return str_split($usedChars);
 }
 function getLettersOccurrenceInNames(array $usedCharsArray, mixed $joinedNames, mixed $joinedNamesLength): void
 {
@@ -66,8 +59,7 @@ function getLettersOccurrenceInNames(array $usedCharsArray, mixed $joinedNames, 
         $charPercentage = $count / $joinedNamesLength * 100;
         print $char . "\t" . $count . "\t" . round($charPercentage, 2) . "%" . "\n";
     }
-
 }
-?>
+
 
 

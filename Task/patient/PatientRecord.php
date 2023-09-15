@@ -6,5 +6,3 @@ interface PatientRecord
 
     public function getPatientNumber();
 }
-
-?>
